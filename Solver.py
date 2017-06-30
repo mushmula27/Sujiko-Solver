@@ -13,3 +13,7 @@ class Block(object):
     def compare_numbers(self):
         self.add_numbers()
         return self.center == self.sum
+
+new_block = Block(17, [2,4,5,6])
+result = new_block.compare_numbers()
+print(result)
