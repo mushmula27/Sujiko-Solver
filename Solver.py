@@ -14,6 +14,10 @@ class Block(object):
         self.add_numbers()
         return self.center == self.sum
 
+<<<<<<< HEAD
 new_block = Block(17, [1,4,5,6])
+=======
+new_block = Block(17, [22,4,5,6])
+>>>>>>> f79163f7f7b9b6d9cb220fa0fecf06a3106005e8
 result = new_block.compare_numbers()
 print(result)
