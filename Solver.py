@@ -1,19 +1,54 @@
-class Block(object):
-    def __init__(self, center, numbers):
-        self.center = center
-        self.top_left = numbers[0]
-        self.top_right = numbers[1]
-        self.bottom_left = numbers[2]
-        self.bottom_right = numbers[3]
-        self.sum = 0
+class SujikoGrid(object):
+    def __init__(self):
+        self.BlockMap = {
+            'tl':[(0,0),(0,1),(1,0),(1,1)],
+            'tr':[(0,1),(0,2),(1,1),(1,2)],
+            'bl':[(1,0),(1,1),(2,0),(2,1)],
+            'br':[(1,1),(1,2),(2,1),(2,2)]
+        }
 
-    def add_numbers(self):
-        self.sum = self.top_right + self.top_left + self.bottom_right + self.bottom_left
+        tl = input('What is the top left bubble value? ')
+        tr = input('What is the top right bubble value? ')
+        bl = input('What is the bottom left bubble value? ')
+        br = input('What is the bottom right bubble value? ')
 
-    def compare_numbers(self):
-        self.add_numbers()
-        return self.center == self.sum
+        self.BubbleVals = {
+            'tl':tl,
+            'tr':tr,
+            'bl':bl,
+            'br':br
+        }
 
-new_block = Block(17, [64,4,5,6])
-result = new_block.compare_numbers()
-print(result)
+        self.Grid = [
+            [None,None,None],
+            [None,None,None],
+            [None,None,None]
+        ]
+
+        loop = True
+        while loop:
+            miniloop = True
+            row = input('What is the row number of known value? ')
+            col = input('What is the column number of known value? ')
+            val = input('What is the known value? ')
+            self.UpdateGrid(row, col, val)
+            #Need to create fn to populate the Grid
+            while miniloop:
+                check = input('Are there any other known values? (y/n) ')
+                if check == 'n':
+                    loop = False
+                    miniloop = False
+                elif check == 'y':
+                    loop = True
+                    miniloop = False
+                else:
+                    print('Not a valud response - please select y or n')
+                    miniloop = True
+
+    def UpdateGrid(self, row, col, val):
+        row = int(row)-1
+        col = int(col)-1
+        self.Grid[row][col] = val
+
+Solver = SujikoGrid()
+print(Solver.Grid)
