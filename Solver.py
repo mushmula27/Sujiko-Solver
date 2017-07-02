@@ -1,31 +1,3 @@
-# class Block(object):
-#     def __init__(self, center):
-#         self.center = center
-#         self.top_left = None
-#         self.top_right = None
-#         self.bottom_left = None
-#         self.bottom_right = None
-#         self.sum = 0
-
-#     def add_numbers(self):
-#         self.sum = self.top_right + self.top_left + self.bottom_right + self.bottom_left
-
-#     def set_value(self, position, value):
-#         if(position == 'tl'):
-#             self.top_left = value
-#         elif(position == 'tr'):
-#             self.top_right = value
-#         elif(position == 'bl'):
-#             self.bottom_left = value
-#         elif(position == 'br'):
-#             self.bottom_right = value
-#         else:
-#             print('invalid position')
-
-#     def compare_numbers(self):
-#         self.add_numbers()
-#         return self.center == self.sum
-
 class Sujiko_Grid(object):
     def __init__(self):
         self.block_map = {
@@ -52,14 +24,24 @@ class Sujiko_Grid(object):
             [None, None, None],
             [None, None, None]
         ]
+        self.min_val = 1
+        self.max_val = len(self.grid) * len(self.grid[0])
 
         loop = True
 
         while loop:
             print('\n')
+            cont = input('Are there more known numbers? (yes/no/y/n): ')
+            if(cont == 'no' or cont == 'n'):
+                loop = False
+                break
+
             i_coord = input('What is the ith coord of the known number? ')
             j_coord = input('What is the jth coord of the known number? ')
             num = input('What is the number at (' + i_coord + ', ' + j_coord + ')? ')
+            i_coord = int(i_coord) - 1
+            j_coord = int(j_coord) - 1
+            num = int(num)
             self.update_cell(i_coord, j_coord, num)
             more = input('Are there more known numbers? (yes/no/y/n): ')
             if(more == 'yes' or more == 'y'):
@@ -70,9 +52,7 @@ class Sujiko_Grid(object):
                 print('Not a valid response, try again')
 
     def update_cell(self, i, j, num):
-        i = int(i) - 1
-        j = int(j) - 1
-        self.grid[i][j] = int(num)
+        self.grid[i][j] = num
 
     def find_block_sum(self, block):
         coords = self.block_map[block]
@@ -101,17 +81,62 @@ class Sujiko_Grid(object):
 
         return True
 
+    def is_legal_move(self, val):
+        for row in self.grid:
+            for cell_val in row:
+                if cell_val == val:
+                    return False
+        return True
 
 class Sujiko_Solver(object):
     def __init__(self, grid):
         self.grid = grid
         self.solve()
+        print('\n')
+        print('Solution:')
+        print('\n')
+        print(self.grid.grid[0])
+        print(' ', str(self.grid.center_vals['tl']) + ',', self.grid.center_vals['tr'])
+        print(self.grid.grid[1])
+        print(' ', str(self.grid.center_vals['bl']) + ',', self.grid.center_vals['br'])
+        print(self.grid.grid[2])
+        print('\n')
 
     def solve(self):
-        print(grid.grid)
-        result = grid.compare_block_to_center('tl')
-        print(result)
+        solved = False
 
+        if self.grid.is_solved():
+            solved = True
+        else:
+            candidate_cell = self.get_empty_cell()
+            cell_val = self.grid.min_val
+
+            while not solved and cell_val <= self.grid.max_val:
+                if self.grid.is_legal_move(cell_val):
+
+                    self.grid.update_cell(
+                                            candidate_cell[0],
+                                            candidate_cell[1],
+                                            cell_val
+                                        )
+
+                    if self.solve():
+                        solved = True
+                    else:
+                        self.grid.update_cell(
+                                            candidate_cell[0],
+                                            candidate_cell[1],
+                                            None
+                                        )
+                cell_val = cell_val + 1
+
+        return solved
+
+    def get_empty_cell(self):
+        for i, row in enumerate(self.grid.grid):
+            for y, cell in enumerate(row):
+                if cell is None:
+                    return (i, y)
 
 grid = Sujiko_Grid()
 Sujiko_Solver(grid)
