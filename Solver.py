@@ -93,6 +93,14 @@ class Sujiko_Grid(object):
             return result == self.center_vals[block]
         return False
 
+    def is_solved(self):
+        for block in ['tl', 'tr', 'bl', 'br']:
+            valid = self.compare_block_to_center(block)
+            if not valid:
+                return False
+
+        return True
+
 
 class Sujiko_Solver(object):
     def __init__(self, grid):
